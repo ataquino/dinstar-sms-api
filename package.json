@@ -1,0 +1,27 @@
+{
+  "name": "dinstar-sms-api",
+  "version": "0.1.0",
+  "description": "Wrapper for Dinstar's GSM Gateway API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ataquino/dinstar-sms-api.git"
+  },
+  "keywords": [
+    "dinstar",
+    "sms"
+  ],
+  "author": "Arthur de Aquino <ataquino@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ataquino/dinstar-sms-api/issues"
+  },
+  "homepage": "https://github.com/ataquino/dinstar-sms-api#readme",
+  "dependencies": {
+    "infinite-loop": "^0.2.2",
+    "request": "^2.74.0"
+  }
+}
