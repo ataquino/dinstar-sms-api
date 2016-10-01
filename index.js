@@ -20,12 +20,14 @@ var Dinstar = function (host, username, password) {
     self.outgoingSms = [];
 
     self.outgoingResultLoop = new InfiniteLoop();
-    self.outgoingResultLoop.add(self.queryOutgoingSmsResult).setInterval(5000).onError(function (error) { console.log(error) });
+    self.outgoingResultLoop.add(self.queryOutgoingSmsResult, undefined, self).setInterval(5000).onError(function (error) { console.log(error) });
 
     self.incomingSmsLoop = new InfiniteLoop();
-    self.incomingSmsLoop.add(self.queryIncomingSms).setInterval(5000).onError(function (error) { console.log(error) });
+    self.incomingSmsLoop.add(self.queryIncomingSms, self).setInterval(5000).onError(function (error) { console.log(error) });
 
     EventEmitter.call(this);
+
+    console.log(self.outgoingSms);
 };
 
 Dinstar.prototype.__proto__ = EventEmitter.prototype;
@@ -58,6 +60,11 @@ Dinstar.prototype.sendSms = function (number, message, messageId, sendToSim) {
         }
     };
 
+    console.log(sendToSim);
+    if (sendToSim !== undefined && sendToSim !== false) {
+        options.body.port = [sendToSim];
+    }
+
     request(options, function (error, response, body) {
         if (!error && response.statusCode === 200) {
 
@@ -79,25 +86,27 @@ Dinstar.prototype.sendSms = function (number, message, messageId, sendToSim) {
 };
 
 Dinstar.prototype.registerForOutgoingSmsResult = function () {
-    self.outgoingResultLoop.run();
+    this.outgoingResultLoop.run();
 };
 
 Dinstar.prototype.unregisterForOutgoingSmsResult = function () {
-    self.outgoingResultLoop.stop();
+    this.outgoingResultLoop.stop();
 };
 
 Dinstar.prototype.registerForIncomingSms = function () {
-    self.incomingSmsLoop.run();
+    this.incomingSmsLoop.run();
 };
 
 Dinstar.prototype.unregisterForIncomingSms = function () {
-    self.incomingSmsLoop.stop();
+    this.incomingSmsLoop.stop();
 };
 
-Dinstar.prototype.queryOutgoingSmsResult = function (messageId) {
-    var self = this;
+Dinstar.prototype.queryOutgoingSmsResult = function (messageId, that) {
+    var self = that || this;
 
     var messageIds = messageId ? [messageId] : self.outgoingSms.splice(0, 32);
+
+    console.log(messageIds);
 
     if (messageIds.length > 0) {
         var options = {
@@ -110,6 +119,7 @@ Dinstar.prototype.queryOutgoingSmsResult = function (messageId) {
         };
 
         request(options, function (error, response, body) {
+            
             if (!error && response.statusCode === 200) {
 
                 self.emit('message', body);
@@ -131,6 +141,8 @@ Dinstar.prototype.queryOutgoingSmsResult = function (messageId) {
                         }
 
                         if (result.status === 'SENT_OK' || result.status === 'DELIVERED') {
+                            console.log("delivered");
+                            console.log(result);
                             self.emit('sms_ok', result);
                         }
                     }
@@ -141,8 +153,8 @@ Dinstar.prototype.queryOutgoingSmsResult = function (messageId) {
     
 };
 
-Dinstar.prototype.queryIncomingSms = function () {
-    var self = this;
+Dinstar.prototype.queryIncomingSms = function (that) {
+    var self = that || this;
 
     var options = {
         url: self.url + QUERY_INCOMING_SMS,
