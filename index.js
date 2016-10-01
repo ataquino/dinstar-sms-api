@@ -26,8 +26,6 @@ var Dinstar = function (host, username, password) {
     self.incomingSmsLoop.add(self.queryIncomingSms, self).setInterval(5000).onError(function (error) { console.log(error) });
 
     EventEmitter.call(this);
-
-    console.log(self.outgoingSms);
 };
 
 Dinstar.prototype.__proto__ = EventEmitter.prototype;
@@ -60,7 +58,6 @@ Dinstar.prototype.sendSms = function (number, message, messageId, sendToSim) {
         }
     };
 
-    console.log(sendToSim);
     if (sendToSim !== undefined && sendToSim !== false) {
         options.body.port = [sendToSim];
     }
@@ -106,8 +103,6 @@ Dinstar.prototype.queryOutgoingSmsResult = function (messageId, that) {
 
     var messageIds = messageId ? [messageId] : self.outgoingSms.splice(0, 32);
 
-    console.log(messageIds);
-
     if (messageIds.length > 0) {
         var options = {
             url: self.url + QUERY_SMS_RESULT,
@@ -141,8 +136,6 @@ Dinstar.prototype.queryOutgoingSmsResult = function (messageId, that) {
                         }
 
                         if (result.status === 'SENT_OK' || result.status === 'DELIVERED') {
-                            console.log("delivered");
-                            console.log(result);
                             self.emit('sms_ok', result);
                         }
                     }
