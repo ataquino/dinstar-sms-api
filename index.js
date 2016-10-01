@@ -145,7 +145,9 @@ Dinstar.prototype.queryOutgoingSmsResult = function (messageId, that) {
                 }
             }
 
-            self.outgoingSms.unshift(messageIds);
+            for (var i = 0; i < messageIds.length; i++) {
+                self.addToOutgoing(messageIds[i]);
+            }
         });
     }
     
