@@ -127,10 +127,6 @@ Dinstar.prototype.queryOutgoingSmsResult = function (messageId, that) {
 
                         result.messageId = result.user_id;
 
-                        if (result.status === 'SENDING') {
-                            self.addToOutgoing(result.messageId, true);
-                        }
-
                         if (result.status === 'FAILED') {
                             self.emit('sms_error', result);
                         }
@@ -138,9 +134,18 @@ Dinstar.prototype.queryOutgoingSmsResult = function (messageId, that) {
                         if (result.status === 'SENT_OK' || result.status === 'DELIVERED') {
                             self.emit('sms_ok', result);
                         }
+
+                        if (result.status !== 'SENDING') {
+                            var index = messageIds.indexOf(result.messageId);
+                            if (index > -1) {
+                                messageIds.splice(index, 1);
+                            }
+                        }
                     }
                 }
             }
+
+            self.outgoingSms.unshift(messageIds);
         });
     }
     
