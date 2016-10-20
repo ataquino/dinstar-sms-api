@@ -40,7 +40,7 @@ Dinstar.prototype.addToOutgoing = function (messageId, addToFront) {
     }
 };
 
-Dinstar.prototype.sendSms = function (number, message, messageId, sendToSim) {
+Dinstar.prototype.sendSms = function (number, message, messageId, sendToSim, encoding) {
     var self = this;
 
     var options = {
@@ -49,6 +49,7 @@ Dinstar.prototype.sendSms = function (number, message, messageId, sendToSim) {
         json: true,
         body: {
             text: message,
+            encoding: encoding || "gsm-7bit",
             param: [
                 {
                     number: number,
