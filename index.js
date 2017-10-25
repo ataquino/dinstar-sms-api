@@ -61,6 +61,9 @@ Dinstar.prototype.sendSms = function (number, message, messageId, sendToSim, enc
 
     if (sendToSim !== undefined && sendToSim !== false) {
         options.body.port = sendToSim.split(',');
+        for(var i = 0; i < options.body.port.length; i++) {
+            options.body.port[i] = parseInt(options.body.port[i]);
+        }
     }
 
     request(options, function (error, response, body) {
