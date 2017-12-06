@@ -1,6 +1,6 @@
 {
   "name": "dinstar-sms-api",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Wrapper for Dinstar's GSM Gateway API",
   "main": "index.js",
   "scripts": {
